@@ -80,7 +80,18 @@ class MainActivity : AppCompatActivity() {
             adapter.updateDocuments(documents)
         }
 
+        binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
 
+            override fun onQueryTextChange(newText: String?): Boolean {
+                newText?.let {
+                    adapter.filterDocuments(it) // Filter documents on text change
+                }
+                return true
+            }
+        })
 
     }
 
