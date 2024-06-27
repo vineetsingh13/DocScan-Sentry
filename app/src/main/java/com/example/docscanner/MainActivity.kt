@@ -5,6 +5,8 @@ import android.app.AlertDialog
 import android.content.IntentSender
 import android.os.Bundle
 import android.os.Environment
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.view.View
@@ -73,31 +75,35 @@ class MainActivity : AppCompatActivity() {
             handleActivityResult(result)
         }
 
-        populateModeSelector()
+        //populateModeSelector()
 
         lifecycleScope.launch {
             documents = db.scannedDocumentDao().getAllDocuments().toMutableList()
             adapter.updateDocuments(documents)
         }
 
-        binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                return false
+        binding.searchInputText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                // No action needed here
             }
 
-            override fun onQueryTextChange(newText: String?): Boolean {
-                newText?.let {
-                    adapter.filterDocuments(it) // Filter documents on text change
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // No action needed here
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                // Filter documents as the user types
+                s?.let {
+                    adapter.filterDocuments(it.toString())
                 }
-                return true
             }
         })
 
     }
 
-    fun onEnableGalleryImportCheckboxClicked(view: View) {
-        enableGalleryImport = (view as CheckBox).isChecked
-    }
+//    fun onEnableGalleryImportCheckboxClicked(view: View) {
+//        enableGalleryImport = (view as CheckBox).isChecked
+//    }
 
     @Suppress("UNUSED_PARAMETER")
     fun onScanButtonClicked(unused: View) {
@@ -105,27 +111,28 @@ class MainActivity : AppCompatActivity() {
         //Glide.with(this).clear(binding.firstPageView)
 
         val options = GmsDocumentScannerOptions.Builder()
-            .setScannerMode(GmsDocumentScannerOptions.SCANNER_MODE_BASE)
+            .setScannerMode(GmsDocumentScannerOptions.SCANNER_MODE_FULL)
             .setResultFormats(GmsDocumentScannerOptions.RESULT_FORMAT_PDF)
             .setGalleryImportAllowed(enableGalleryImport)
+            .setPageLimit(5000)
 
-        when (selectedMode) {
-            FULL_MODE -> options.setScannerMode(GmsDocumentScannerOptions.SCANNER_MODE_FULL)
-            BASE_MODE -> options.setScannerMode(GmsDocumentScannerOptions.SCANNER_MODE_BASE)
-            BASE_MODE_WITH_FILTER -> options.setScannerMode(GmsDocumentScannerOptions.SCANNER_MODE_BASE_WITH_FILTER)
-            else -> Log.e(TAG, "Unknown selectedMode: $selectedMode")
-        }
+//        when (selectedMode) {
+//            FULL_MODE -> options.setScannerMode(GmsDocumentScannerOptions.SCANNER_MODE_FULL)
+//            BASE_MODE -> options.setScannerMode(GmsDocumentScannerOptions.SCANNER_MODE_BASE)
+//            BASE_MODE_WITH_FILTER -> options.setScannerMode(GmsDocumentScannerOptions.SCANNER_MODE_BASE_WITH_FILTER)
+//            else -> Log.e(TAG, "Unknown selectedMode: $selectedMode")
+//        }
 
-        val pageLimitInputText = binding.pageLimitInput.text.toString()
-        if (pageLimitInputText.isNotEmpty()) {
-            try {
-                val pageLimit = pageLimitInputText.toInt()
-                options.setPageLimit(pageLimit)
-            } catch (e: Throwable) {
-                //binding.resultInfo.text = e.message
-                return
-            }
-        }
+//        val pageLimitInputText = binding.pageLimitInput.text.toString()
+//        if (pageLimitInputText.isNotEmpty()) {
+//            try {
+//                val pageLimit = pageLimitInputText.toInt()
+//                options.setPageLimit(pageLimit)
+//            } catch (e: Throwable) {
+//                //binding.resultInfo.text = e.message
+//                return
+//            }
+//        }
 
         model.getStartScanIntent(this, options.build())
             .addOnSuccessListener { intentSender: IntentSender ->
@@ -136,7 +143,7 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
-    private fun populateModeSelector() {
+    /*private fun populateModeSelector() {
         val featureSpinner = findViewById<Spinner>(R.id.mode_selector)
         val options: MutableList<String> = ArrayList()
         options.add(FULL_MODE)
@@ -153,7 +160,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onNothingSelected(arg0: AdapterView<*>?) {}
         }
-    }
+    }*/
 
     private fun handleActivityResult(activityResult: ActivityResult) {
         val resultCode = activityResult.resultCode
@@ -168,12 +175,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateUIWithScanResult(result: GmsDocumentScanningResult) {
-        //binding.resultInfo.text = getString(R.string.scan_result, result)
+        /*binding.resultInfo.text = getString(R.string.scan_result, result)*/
 
-//        val pages = result.pages
-//        if (pages != null && pages.isNotEmpty()) {
-//            Glide.with(this).load(pages[0].imageUri).into(binding.firstPageView)
-//        }
+        /*val pages = result.pages
+        if (pages != null && pages.isNotEmpty()) {
+            Glide.with(this).load(pages[0].imageUri).into(binding.firstPageView)
+        }*/
 
         val dialogView = layoutInflater.inflate(R.layout.alert_dialog_layout, null)
         val builder = AlertDialog.Builder(this)

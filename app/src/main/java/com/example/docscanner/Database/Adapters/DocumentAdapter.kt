@@ -17,7 +17,7 @@ class DocumentAdapter(private var documents: List<ScannedDocument>) : RecyclerVi
 
     inner class DocumentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val fileNameView: TextView = itemView.findViewById(R.id.file_name)
-        val filePathView: TextView = itemView.findViewById(R.id.file_path)
+        //val filePathView: TextView = itemView.findViewById(R.id.file_path)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DocumentViewHolder {
@@ -28,7 +28,7 @@ class DocumentAdapter(private var documents: List<ScannedDocument>) : RecyclerVi
     override fun onBindViewHolder(holder: DocumentViewHolder, position: Int) {
         val document = filteredDocuments[position]
         holder.fileNameView.text = document.fileName
-        holder.filePathView.text = document.filePath
+        //holder.filePathView.text = document.filePath
         holder.itemView.setOnClickListener {
             val file = File(document.filePath)
             val contentUri = FileProvider.getUriForFile(holder.itemView.context, holder.itemView.context.packageName + ".provider", file)

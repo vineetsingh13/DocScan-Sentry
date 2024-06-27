@@ -1,73 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="16dp"
-    android:orientation="vertical">
-    <LinearLayout
+    android:background="@color/white">
+
+    <TextView
+        android:id="@+id/app_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/label_mode_selector" />
-        <Spinner
-            android:id="@+id/mode_selector"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-    </LinearLayout>
+        android:text="DocScan Sentry"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:layout_margin="12dp"
+        android:textColor="@color/blue"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-    <LinearLayout
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/searchInput"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/label_enable_gallery_import" />
-        <CheckBox
-            android:id="@+id/enable_gallery_import"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onEnableGalleryImportCheckboxClicked"
-            android:checked="true"
-            android:text="" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/label_set_page_limit" />
-        <EditText
-            android:id="@+id/page_limit_input"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:inputType="number"
-            android:autofillHints="" />
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/scan_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="onScanButtonClicked"
-        android:text="@string/scan_button" />
-
-    <SearchView
-        android:id="@+id/search_bar"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:hint="enter file name"
-        />
+        android:layout_height="55dp"
+        android:animateLayoutChanges="false"
+        android:layout_margin="12dp"
+        app:startIconDrawable="@drawable/baseline_search_24"
+        app:startIconTint="@color/blue"
+        app:hintTextColor="@color/black"
+        android:hint="Search Documents...."
+        android:textColorHint="@color/black"
+        app:boxCornerRadiusTopStart="22dp"
+        app:boxCornerRadiusTopEnd="22dp"
+        app:boxCornerRadiusBottomEnd="22dp"
+        app:boxCornerRadiusBottomStart="22dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_name"
+        app:boxStrokeColor="@color/blue"
+        >
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/searchInputText"
+            android:textColorHint="@color/black"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="4dp"
+            android:textColor="@color/black" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="400dp"/>
-</LinearLayout>
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/scan_button"
+        app:layout_constraintTop_toBottomOf="@+id/searchInput" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/scan_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onScanButtonClicked"
+        android:text="@string/scan_button"
+        app:icon="@drawable/baseline_camera_alt_24"
+        app:iconSize="25dp"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
