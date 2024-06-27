@@ -8,14 +8,8 @@ import android.os.Environment
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.appcompat.app.AppCompatActivity
-import android.util.Log
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.CheckBox
 import android.widget.EditText
-import android.widget.SearchView
-import android.widget.Spinner
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
@@ -26,13 +20,12 @@ import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
-import com.bumptech.glide.Glide
 import com.example.docscanner.Database.Adapters.DocumentAdapter
 import com.example.docscanner.Database.AppDatabase
 import com.example.docscanner.Database.Entity.ScannedDocument
+import com.example.docscanner.Models.model
 import com.example.docscanner.databinding.ActivityMainBinding
 import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions
-import com.google.mlkit.vision.documentscanner.GmsDocumentScanning
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanningResult
 import kotlinx.coroutines.launch
 import java.io.File
@@ -83,13 +76,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.searchInputText.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                // No action needed here
-            }
+            override fun afterTextChanged(s: Editable?) {}
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // No action needed here
-            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 // Filter documents as the user types
@@ -101,9 +90,9 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-//    fun onEnableGalleryImportCheckboxClicked(view: View) {
-//        enableGalleryImport = (view as CheckBox).isChecked
-//    }
+    /*fun onEnableGalleryImportCheckboxClicked(view: View) {
+        enableGalleryImport = (view as CheckBox).isChecked
+    }*/
 
     @Suppress("UNUSED_PARAMETER")
     fun onScanButtonClicked(unused: View) {
@@ -116,23 +105,22 @@ class MainActivity : AppCompatActivity() {
             .setGalleryImportAllowed(enableGalleryImport)
             .setPageLimit(5000)
 
-//        when (selectedMode) {
-//            FULL_MODE -> options.setScannerMode(GmsDocumentScannerOptions.SCANNER_MODE_FULL)
-//            BASE_MODE -> options.setScannerMode(GmsDocumentScannerOptions.SCANNER_MODE_BASE)
-//            BASE_MODE_WITH_FILTER -> options.setScannerMode(GmsDocumentScannerOptions.SCANNER_MODE_BASE_WITH_FILTER)
-//            else -> Log.e(TAG, "Unknown selectedMode: $selectedMode")
-//        }
-
-//        val pageLimitInputText = binding.pageLimitInput.text.toString()
-//        if (pageLimitInputText.isNotEmpty()) {
-//            try {
-//                val pageLimit = pageLimitInputText.toInt()
-//                options.setPageLimit(pageLimit)
-//            } catch (e: Throwable) {
-//                //binding.resultInfo.text = e.message
-//                return
-//            }
-//        }
+        /*when (selectedMode) {
+            FULL_MODE -> options.setScannerMode(GmsDocumentScannerOptions.SCANNER_MODE_FULL)
+            BASE_MODE -> options.setScannerMode(GmsDocumentScannerOptions.SCANNER_MODE_BASE)
+            BASE_MODE_WITH_FILTER -> options.setScannerMode(GmsDocumentScannerOptions.SCANNER_MODE_BASE_WITH_FILTER)
+            else -> Log.e(TAG, "Unknown selectedMode: $selectedMode")
+        }
+        val pageLimitInputText = binding.pageLimitInput.text.toString()
+        if (pageLimitInputText.isNotEmpty()) {
+            try {
+                val pageLimit = pageLimitInputText.toInt()
+                options.setPageLimit(pageLimit)
+            } catch (e: Throwable) {
+                //binding.resultInfo.text = e.message
+                return
+            }
+        }*/
 
         model.getStartScanIntent(this, options.build())
             .addOnSuccessListener { intentSender: IntentSender ->
@@ -235,12 +223,11 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
+/*val shareIntent =
+    Intent(Intent.ACTION_SEND).apply {
+        putExtra(Intent.EXTRA_STREAM, externalUri)
+        type = "application/pdf"
+        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    }
+startActivity(Intent.createChooser(shareIntent, "share pdf"))*/
 
-
-//                val shareIntent =
-//                    Intent(Intent.ACTION_SEND).apply {
-//                        putExtra(Intent.EXTRA_STREAM, externalUri)
-//                        type = "application/pdf"
-//                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-//                    }
-//                startActivity(Intent.createChooser(shareIntent, "share pdf"))

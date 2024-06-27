@@ -1,4 +1,4 @@
-package com.example.docscanner
+package com.example.docscanner.Models
 
 import android.app.Activity
 import android.content.Context
