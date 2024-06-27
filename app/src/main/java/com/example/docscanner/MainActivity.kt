@@ -16,6 +16,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts.StartIntentSenderForResult
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -170,11 +171,17 @@ class MainActivity : AppCompatActivity() {
             Glide.with(this).load(pages[0].imageUri).into(binding.firstPageView)
         }*/
 
+        buildDialog(result)
+    }
+
+    private fun buildDialog(result: GmsDocumentScanningResult){
+
         val dialogView = layoutInflater.inflate(R.layout.alert_dialog_layout, null)
         val builder = AlertDialog.Builder(this)
 
         fileNameTextBox = dialogView.findViewById(R.id.password)
         builder.setView(dialogView)
+            .setCancelable(false)
             .setPositiveButton("Save") { dialog, id ->
                 var fname = fileNameTextBox.text.toString().trim()
                 if (!fname.endsWith(".pdf")) {
@@ -190,8 +197,16 @@ class MainActivity : AppCompatActivity() {
             }
 
         val alert = builder.create()
+        alert.setCanceledOnTouchOutside(false)
+        alert.setOnShowListener {
+            val positiveButton = alert.getButton(AlertDialog.BUTTON_POSITIVE)
+            val negativeButton = alert.getButton(AlertDialog.BUTTON_NEGATIVE)
+            positiveButton.setTextColor(ContextCompat.getColor(this, R.color.blue))
+            negativeButton.setTextColor(ContextCompat.getColor(this, R.color.blue))
+        }
         alert.show()
     }
+
 
     private fun saveFileToDownloads(path: String, fileName: String) {
         val externalUri = FileProvider.getUriForFile(this, packageName + ".provider", File(path))

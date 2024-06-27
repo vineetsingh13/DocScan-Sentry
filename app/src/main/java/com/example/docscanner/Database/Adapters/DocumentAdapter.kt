@@ -23,8 +23,8 @@ class DocumentAdapter(private var documents: List<ScannedDocument>) : RecyclerVi
     inner class DocumentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val fileNameView: TextView = itemView.findViewById(R.id.file_name)
         //val filePathView: TextView = itemView.findViewById(R.id.file_path)
-        val viewButton=itemView.findViewById<Button>(R.id.view_icon)
         val downloadButton=itemView.findViewById<Button>(R.id.download_icon)
+        val shareButton=itemView.findViewById<Button>(R.id.share_icon)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DocumentViewHolder {
@@ -40,15 +40,25 @@ class DocumentAdapter(private var documents: List<ScannedDocument>) : RecyclerVi
             displayDocument(document.filePath,holder.itemView.context)
         }
 
-        holder.viewButton.setOnClickListener {
-            displayDocument(document.filePath,holder.itemView.context)
-        }
 
         holder.downloadButton.setOnClickListener {
             downloadDocument(document.filePath,document.fileName,holder.itemView.context)
         }
 
-        //
+        holder.shareButton.setOnClickListener {
+
+            val externalUri = FileProvider.getUriForFile(holder.itemView.context, holder.itemView.context.packageName + ".provider", File(document.filePath))
+
+            val shareIntent =
+                Intent(Intent.ACTION_SEND).apply {
+                    putExtra(Intent.EXTRA_STREAM, externalUri)
+                    type = "application/pdf"
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                }
+            holder.itemView.context.startActivity(Intent.createChooser(shareIntent, "share pdf"))
+        }
+
+        //animated the itemview
         holder.itemView.apply {
             alpha = 0f
             scaleX = 0.5f
@@ -72,6 +82,7 @@ class DocumentAdapter(private var documents: List<ScannedDocument>) : RecyclerVi
         notifyDataSetChanged()
     }
 
+    //function for displaying the filtered list
     fun filterDocuments(query: String) {
         filteredDocuments = if (query.isEmpty()) {
             documents // Show all documents if query is empty
@@ -82,6 +93,7 @@ class DocumentAdapter(private var documents: List<ScannedDocument>) : RecyclerVi
     }
 
 
+    //function to display the document
     fun displayDocument(path:String,context: Context){
         val file = File(path)
         val contentUri = FileProvider.getUriForFile(context, context.packageName + ".provider", file)
@@ -93,6 +105,7 @@ class DocumentAdapter(private var documents: List<ScannedDocument>) : RecyclerVi
     }
 
 
+    //function to download the document to the device
     fun downloadDocument(path:String, fileName: String, context: Context){
         val externalUri = FileProvider.getUriForFile(context, context.packageName + ".provider", File(path))
         val contentResolver = context.contentResolver
