@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white">
 
     <TextView
@@ -36,8 +36,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/app_name"
-        app:boxStrokeColor="@color/blue"
-        >
+        app:boxStrokeColor="@color/blue">
+
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/searchInputText"
             android:textColorHint="@color/black"
@@ -56,6 +56,19 @@
         app:layout_constraintBottom_toTopOf="@+id/scan_button"
         app:layout_constraintTop_toBottomOf="@+id/searchInput" />
 
+    <ImageView
+        android:id="@+id/illustration"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        app:layout_constraintBottom_toTopOf="@+id/scan_button"
+        app:layout_constraintTop_toBottomOf="@+id/searchInput"
+        android:visibility="gone"
+        android:src="@drawable/illus3"
+        android:contentDescription="no scan available"
+        />
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/scan_button"
         android:layout_width="match_parent"
@@ -68,7 +81,8 @@
         android:backgroundTint="@color/blue"
         app:cornerRadius="4dp"
         android:textSize="20sp"
-        android:padding="8dp"
+        android:padding="10dp"
+        android:layout_marginBottom="-3dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

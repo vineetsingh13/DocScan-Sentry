@@ -44,9 +44,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var model: model
     private var enableGalleryImport = true
     private val FULL_MODE = "FULL"
-    private val BASE_MODE = "BASE"
-    private val BASE_MODE_WITH_FILTER = "BASE_WITH_FILTER"
-    private var selectedMode = FULL_MODE
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,7 +71,14 @@ class MainActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             documents = db.scannedDocumentDao().getAllDocuments().toMutableList()
-            adapter.updateDocuments(documents)
+            if(documents.isEmpty()){
+                binding.recyclerView.visibility=View.GONE
+                binding.illustration.visibility=View.VISIBLE
+            }else{
+                binding.recyclerView.visibility=View.VISIBLE
+                binding.illustration.visibility=View.GONE
+                adapter.updateDocuments(documents)
+            }
         }
 
         binding.searchInputText.addTextChangedListener(object : TextWatcher {
@@ -228,8 +233,14 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             db.scannedDocumentDao().insert(scannedDocument)
             documents = db.scannedDocumentDao().getAllDocuments().toMutableList()
-            adapter.updateDocuments(documents)
-
+            if(documents.isEmpty()){
+                binding.recyclerView.visibility=View.GONE
+                binding.illustration.visibility=View.VISIBLE
+            }else{
+                binding.recyclerView.visibility=View.VISIBLE
+                binding.illustration.visibility=View.GONE
+                adapter.updateDocuments(documents)
+            }
         }
     }
 
