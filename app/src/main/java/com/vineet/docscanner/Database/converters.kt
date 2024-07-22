@@ -1,4 +1,4 @@
-package com.example.docscanner.Database
+package com.vineet.docscanner.Database
 
 import androidx.room.TypeConverter
 

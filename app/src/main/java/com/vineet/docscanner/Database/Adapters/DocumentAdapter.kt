@@ -1,5 +1,6 @@
-package com.example.docscanner.Database.Adapters
+package com.vineet.docscanner.Database.Adapters
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Environment
@@ -11,14 +12,21 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.RecyclerView
-import com.example.docscanner.Database.Entity.ScannedDocument
-import com.example.docscanner.R
+import com.vineet.docscanner.Database.DAO.ScannedDocumentDao
+import com.vineet.docscanner.Database.Entity.ScannedDocument
+import com.vineet.docscanner.R
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 
-class DocumentAdapter(private var documents: List<ScannedDocument>) : RecyclerView.Adapter<DocumentAdapter.DocumentViewHolder>() {
+class DocumentAdapter(
+    private var documents: MutableList<ScannedDocument>,
+    private val scannedDocumentDao: ScannedDocumentDao
+) : RecyclerView.Adapter<DocumentAdapter.DocumentViewHolder>() {
 
-    private var filteredDocuments: List<ScannedDocument> = documents
+    private var filteredDocuments: MutableList<ScannedDocument> = documents
 
     inner class DocumentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val fileNameView: TextView = itemView.findViewById(R.id.file_name)
@@ -58,6 +66,11 @@ class DocumentAdapter(private var documents: List<ScannedDocument>) : RecyclerVi
             holder.itemView.context.startActivity(Intent.createChooser(shareIntent, "share pdf"))
         }
 
+        holder.itemView.setOnLongClickListener {
+            deleteDocument(position,document,holder.itemView.context)
+            true
+        }
+
         //animated the itemview
         holder.itemView.apply {
             alpha = 0f
@@ -76,7 +89,7 @@ class DocumentAdapter(private var documents: List<ScannedDocument>) : RecyclerVi
         return filteredDocuments.size
     }
 
-    fun updateDocuments(newDocuments: List<ScannedDocument>) {
+    fun updateDocuments(newDocuments: MutableList<ScannedDocument>) {
         documents = newDocuments
         filteredDocuments = newDocuments
         notifyDataSetChanged()
@@ -87,7 +100,7 @@ class DocumentAdapter(private var documents: List<ScannedDocument>) : RecyclerVi
         filteredDocuments = if (query.isEmpty()) {
             documents // Show all documents if query is empty
         } else {
-            documents.filter { it.fileName.contains(query, ignoreCase = true) } // Filter documents by fileName containing query
+            documents.filter { it.fileName.contains(query, ignoreCase = true) }.toMutableList() // Filter documents by fileName containing query
         }
         notifyDataSetChanged()
     }
@@ -118,5 +131,33 @@ class DocumentAdapter(private var documents: List<ScannedDocument>) : RecyclerVi
             }
             Toast.makeText(context, "file saved in downloads", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun deleteDocument(position: Int,doc:ScannedDocument, context: Context) {
+        val document = filteredDocuments[position]
+
+        val builder = AlertDialog.Builder(context)
+        builder.setMessage("Are you sure you want to delete")
+            .setCancelable(false)
+            .setPositiveButton("Yes"){dialog,id->
+                CoroutineScope(Dispatchers.IO).launch {
+                    scannedDocumentDao.delete(doc)
+                    CoroutineScope(Dispatchers.Main).launch {
+                        filteredDocuments.removeAt(position)
+                        documents.remove(document)
+                        notifyItemRemoved(position)
+                        notifyItemRangeChanged(position, itemCount)
+
+                        Toast.makeText(context, "Document deleted", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            .setNegativeButton("No"){ dialog,id->
+                dialog.cancel()
+            }
+
+        val alert = builder.create()
+        alert.setCanceledOnTouchOutside(false)
+        alert.show()
     }
 }

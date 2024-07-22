@@ -1,4 +1,4 @@
-package com.example.docscanner
+package com.vineet.docscanner
 
 import android.app.Activity
 import android.app.AlertDialog
@@ -21,13 +21,13 @@ import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
-import com.example.docscanner.Database.Adapters.DocumentAdapter
-import com.example.docscanner.Database.AppDatabase
-import com.example.docscanner.Database.Entity.ScannedDocument
-import com.example.docscanner.Models.model
-import com.example.docscanner.databinding.ActivityMainBinding
+import com.vineet.docscanner.Database.Adapters.DocumentAdapter
+import com.vineet.docscanner.Database.AppDatabase
+import com.vineet.docscanner.Database.Entity.ScannedDocument
+import com.vineet.docscanner.Models.model
 import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanningResult
+import com.vineet.docscanner.databinding.ActivityMainBinding
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
         ).build()
 
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
-        adapter = DocumentAdapter(documents)
+        adapter = DocumentAdapter(documents,db.scannedDocumentDao())
         binding.recyclerView.adapter = adapter
         model = model()
 

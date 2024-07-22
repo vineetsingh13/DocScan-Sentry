@@ -1,4 +1,4 @@
-package com.example.docscanner.Database.Entity
+package com.vineet.docscanner.Database.Entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

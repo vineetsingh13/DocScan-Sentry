@@ -1,9 +1,10 @@
-package com.example.docscanner.Database.DAO
+package com.vineet.docscanner.Database.DAO
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import com.example.docscanner.Database.Entity.ScannedDocument
+import com.vineet.docscanner.Database.Entity.ScannedDocument
 
 @Dao
 interface ScannedDocumentDao {
@@ -12,4 +13,7 @@ interface ScannedDocumentDao {
 
     @Query("SELECT * FROM scanned_documents")
     suspend fun getAllDocuments(): List<ScannedDocument>
+
+    @Delete
+    suspend fun delete(scannedDocument: ScannedDocument)
 }
